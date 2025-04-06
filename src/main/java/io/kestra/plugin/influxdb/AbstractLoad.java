@@ -1,7 +1,7 @@
 package io.kestra.plugin.influxdb;
 
 import com.influxdb.client.InfluxDBClient;
-import com.influxdb.client.WriteApi;
+import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.write.Point;
 import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.executions.metrics.Counter;
@@ -66,9 +66,9 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
 
         try (
             InfluxDBClient client = this.connection.client(runContext);
-            WriteApi writeApi = client.makeWriteApi();
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(runContext.storage().getFile(from)), FileSerde.BUFFER_SIZE)
         ) {
+            WriteApiBlocking writeApi = client.getWriteApiBlocking();
             String renderedBucket = runContext.render(bucket).as(String.class).orElseThrow();
             String renderedOrg = runContext.render(org).as(String.class).orElseThrow();
             Integer renderedChunk = runContext.render(this.chunk).as(Integer.class).orElse(1000);
@@ -79,6 +79,7 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
                 .map(points -> {
                     List<Point> batch = new ArrayList<>(points);
                     writeApi.writePoints(renderedBucket, renderedOrg, batch);
+
                     logger.debug("Wrote batch of {} points", batch.size());
                     return batch.size();
                 })

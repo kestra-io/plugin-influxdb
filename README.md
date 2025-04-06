@@ -43,14 +43,8 @@ This plugin provides tasks and triggers for interacting with InfluxDB.
 - Write data to InfluxDB
 - Trigger flows based on query results
 
-## Installation
+![Kestra orchestrator](https://kestra.io/video.gif)
 
-Add the plugin to your Kestra installation:
-
-```yaml
-plugins:
-  - io.kestra.plugin.influxdb
-```
 
 ## Running the project in local
 ### Prerequisites

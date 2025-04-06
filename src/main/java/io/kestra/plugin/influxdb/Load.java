@@ -17,7 +17,6 @@ import lombok.experimental.SuperBuilder;
 import reactor.core.publisher.Flux;
 
 import java.io.BufferedReader;
-import java.util.List;
 import java.util.Map;
 
 import static io.kestra.core.utils.Rethrow.throwFunction;
@@ -67,28 +66,18 @@ public class Load extends AbstractLoad {
     @PluginProperty(dynamic = true)
     private Property<String> measurement;
 
-    @Schema(
-        title = "Field to use as timestamp",
-        description = "Optional field in the record to use as timestamp. If not specified, current time will be used."
-    )
-    @PluginProperty(dynamic = true)
-    private Property<String> timestampField;
-
-    @Schema(
-        title = "Fields to use as tags",
-        description = "Optional list of field names to use as InfluxDB tags instead of fields"
-    )
-    @PluginProperty(dynamic = true)
-    private List<String> tagFields;
-
     @SuppressWarnings("unchecked")
     @Override
     protected Flux<Point> source(RunContext runContext, BufferedReader inputStream) throws Exception {
         String renderedMeasurement = runContext.render(measurement).as(String.class).orElseThrow();
+
         return FileSerde.readAll(inputStream)
             .map(throwFunction(data -> {
                 Map<String, Object> values = (Map<String, Object>) data;
-                return Point.measurement(renderedMeasurement).addFields(values);
+                Map<String, Object> fields = (Map<String, Object>) values.get("fields");
+                Map<String, String> tags = (Map<String, String>) values.get("tags");
+
+                return Point.measurement(renderedMeasurement).addFields(fields).addTags(tags);
             }));
 
     }

@@ -7,6 +7,7 @@ import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.executions.metrics.Counter;
+import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,9 +45,10 @@ import java.util.stream.Collectors;
                 tasks:
                   - id: query_influxdb
                     type: io.kestra.plugin.influxdb.InfluxQLQuery
-                    url: "{{ secret('INFLUXDB_URL') }}"
-                    token: "{{ secret('INFLUXDB_TOKEN') }}"
-                    org: "{{ secret('INFLUXDB_ORG') }}"
+                    connection:
+                      url: "{{ secret('INFLUXDB_URL') }}"
+                      token: "{{ secret('INFLUXDB_TOKEN') }}"
+                    org: "my-org"
                     query: "SELECT * FROM measurement WHERE time > now() - 1h"
                     fetchType: EXECUTION
                 """
@@ -61,9 +63,10 @@ import java.util.stream.Collectors;
                 tasks:
                   - id: query_to_file
                     type: io.kestra.plugin.influxdb.InfluxQLQuery
-                    url: "{{ secret('INFLUXDB_URL') }}"
-                    token: "{{ secret('INFLUXDB_TOKEN') }}"
-                    org: "{{ secret('INFLUXDB_ORG') }}"
+                    connection:
+                      url: "{{ secret('INFLUXDB_URL') }}"
+                      token: "{{ secret('INFLUXDB_TOKEN') }}"
+                    org: "my-org"
                     query: "SELECT * FROM measurement WHERE time > now() - 1h"
                     fetchType: ION
                 """
@@ -77,7 +80,7 @@ public class InfluxQLQuery extends AbstractTask implements RunnableTask<InfluxQL
     )
     @PluginProperty(dynamic = true)
     @NotNull
-    private String query;
+    private Property<String> query;
 
     @Schema(
         title = "Result fetch type",
@@ -86,13 +89,7 @@ public class InfluxQLQuery extends AbstractTask implements RunnableTask<InfluxQL
     )
     @PluginProperty
     @Builder.Default
-    private FetchType fetchType = FetchType.EXECUTION;
-
-    @NotNull
-    private String bucket;
-
-    @NotNull
-    private String org;
+    private Property<FetchType> fetchType = Property.of(FetchType.EXECUTION);
 
     public enum FetchType {
         EXECUTION,
@@ -102,8 +99,8 @@ public class InfluxQLQuery extends AbstractTask implements RunnableTask<InfluxQL
     @Override
     public Output run(RunContext runContext) throws Exception {
         try (InfluxDBClient client = client(runContext)) {
-            String renderedQuery = runContext.render(query);
-            String renderedBucket = runContext.render(bucket);
+            String renderedQuery = runContext.render(query).as(String.class).orElseThrow();
+            String renderedBucket = runContext.render(bucket).as(String.class).orElseThrow();
 
             InfluxQLQueryApi queryApi = client.getInfluxQLQueryApi();
 
@@ -142,14 +139,14 @@ public class InfluxQLQuery extends AbstractTask implements RunnableTask<InfluxQL
             runContext.metric(Counter.of("records", recordCount));
 
             URI uri = null;
-            if (fetchType == FetchType.ION) {
+            if (FetchType.ION.equals(runContext.render(fetchType).as(FetchType.class).orElseThrow())) {
                 File tempFile = runContext.workingDir().createTempFile(".ion").toFile();
                 uri = runContext.storage().putFile(tempFile);
             }
 
             return Output.builder()
                 .uri(uri)
-                .rows(fetchType == FetchType.EXECUTION ? results : null)
+                .rows(FetchType.EXECUTION.equals(runContext.render(fetchType).as(FetchType.class).orElseThrow()) ? results : null)
                 .size(recordCount)
                 .build();
         }

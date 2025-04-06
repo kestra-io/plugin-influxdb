@@ -51,9 +51,10 @@ import java.util.Map;
                 tasks:
                   - id: query_influxdb
                     type: io.kestra.plugin.influxdb.FluxQuery
-                    url: "{{ secret('INFLUXDB_URL') }}"
-                    token: "{{ secret('INFLUXDB_TOKEN') }}"
-                    org: "{{ secret('INFLUXDB_ORG') }}"
+                    connection:
+                      url: "{{ secret('INFLUXDB_URL') }}"
+                      token: "{{ secret('INFLUXDB_TOKEN') }}"
+                    org: "my-org"
                     query: |
                       from(bucket: "my-bucket")
                         |> range(start: -1h)
@@ -72,9 +73,10 @@ import java.util.Map;
                 tasks:
                   - id: query_influxdb
                     type: io.kestra.plugin.influxdb.FluxQuery
-                    url: "{{ secret('INFLUXDB_URL') }}"
-                    token: "{{ secret('INFLUXDB_TOKEN') }}"
-                    org: "{{ secret('INFLUXDB_ORG') }}"
+                    connection:
+                      url: "{{ secret('INFLUXDB_URL') }}"
+                      token: "{{ secret('INFLUXDB_TOKEN') }}"
+                    org: "my-org"
                     query: |
                       from(bucket: "my-bucket")
                         |> range(start: -1h)
@@ -94,9 +96,10 @@ import java.util.Map;
                 tasks:
                   - id: query_influxdb
                     type: io.kestra.plugin.influxdb.FluxQuery
-                    url: "{{ secret('INFLUXDB_URL') }}"
-                    token: "{{ secret('INFLUXDB_TOKEN') }}"
-                    org: "{{ secret('INFLUXDB_ORG') }}"
+                    connection:
+                      url: "{{ secret('INFLUXDB_URL') }}"
+                      token: "{{ secret('INFLUXDB_TOKEN') }}"
+                    org: "my-org"
                     query: |
                       from(bucket: "my-bucket")
                         |> range(start: -1h)
