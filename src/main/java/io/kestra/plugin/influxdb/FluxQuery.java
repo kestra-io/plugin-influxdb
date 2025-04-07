@@ -148,6 +148,7 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
     public Output run(RunContext runContext) throws Exception {
         Logger logger = runContext.logger();
         String renderedQuery = runContext.render(query).as(String.class).orElseThrow();
+        String renderedOrg = runContext.render(org).as(String.class).orElseThrow();
 
         try (
             InfluxDBClient client = this.connection.client(runContext);
@@ -155,7 +156,7 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
             QueryApi queryApi = client.getQueryApi();
             logger.debug("Starting query: {}", query);
 
-            List<FluxTable> tables = queryApi.query(renderedQuery);
+            List<FluxTable> tables = queryApi.query(renderedQuery,renderedOrg);
 
             Output.OutputBuilder outputBuilder = Output.builder();
             int recordCount = 0;

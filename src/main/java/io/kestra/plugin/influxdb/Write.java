@@ -2,6 +2,7 @@ package io.kestra.plugin.influxdb;
 
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.WriteApi;
+import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Plugin;
@@ -76,8 +77,8 @@ public class Write extends AbstractTask implements RunnableTask<Write.Output> {
 
         try (
             InfluxDBClient client = this.connection.client(runContext);
-            WriteApi writeApi = client.makeWriteApi()
         ) {
+            WriteApiBlocking writeApi = client.getWriteApiBlocking();
             String renderedSource = runContext.render(source).as(String.class).orElseThrow();
             String renderedBucket = runContext.render(bucket).as(String.class).orElseThrow();
             String renderedOrg = runContext.render(org).as(String.class).orElseThrow();

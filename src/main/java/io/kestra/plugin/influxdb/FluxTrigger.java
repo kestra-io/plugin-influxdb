@@ -68,6 +68,7 @@ public class FluxTrigger extends AbstractTrigger implements PollingTriggerInterf
 
     private Property<String> query;
 
+    @Builder.Default
     private Property<FluxQuery.FetchType> fetchType = Property.of(FluxQuery.FetchType.FETCH);
 
     @Override
