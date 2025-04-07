@@ -142,6 +142,10 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
             QueryApi queryApi = client.getQueryApi();
             logger.debug("Starting query: {}", query);
 
+            if (bucket != null) {
+                logger.warn("Bucket is ignored for FluxQuery as it's embedded in the query string.");
+            }
+
             List<FluxTable> tables = queryApi.query(renderedQuery,renderedOrg);
 
             Output.OutputBuilder outputBuilder = Output.builder();

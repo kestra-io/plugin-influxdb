@@ -30,7 +30,6 @@ public abstract class AbstractTask extends Task {
         title = "InfluxDB bucket.",
         description = "The bucket to use for operations."
     )
-    @NotNull
     protected Property<String> bucket;
 
     @Schema(
