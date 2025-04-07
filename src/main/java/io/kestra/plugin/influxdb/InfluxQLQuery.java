@@ -79,7 +79,6 @@ public class InfluxQLQuery extends AbstractTask implements RunnableTask<InfluxQL
         title = "InfluxQL query to execute",
         description = "The InfluxQL query to execute against InfluxDB"
     )
-    @PluginProperty(dynamic = true)
     @NotNull
     private Property<String> query;
 
@@ -88,7 +87,6 @@ public class InfluxQLQuery extends AbstractTask implements RunnableTask<InfluxQL
         description = "Determines how the query results are stored",
         defaultValue = "EXECUTION"
     )
-    @PluginProperty
     @Builder.Default
     private Property<FetchType> fetchType = Property.of(FetchType.FETCH);
 

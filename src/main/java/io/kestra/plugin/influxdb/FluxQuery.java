@@ -118,7 +118,6 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
         description = "The Flux query to run against InfluxDB"
     )
     @NotNull
-    @PluginProperty(dynamic = true)
     private Property<String> query;
 
     @Schema(
@@ -128,7 +127,6 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
             + "STORE store all rows in a file, "
             + "NONE do nothing."
     )
-    @PluginProperty
     @Builder.Default
     private Property<FetchType> fetchType = Property.of(FetchType.FETCH);
 

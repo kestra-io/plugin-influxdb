@@ -63,7 +63,6 @@ public class Load extends AbstractLoad {
         description = "The measurement name to be used for all points from the ION file"
     )
     @NotNull
-    @PluginProperty(dynamic = true)
     private Property<String> measurement;
 
     @SuppressWarnings("unchecked")

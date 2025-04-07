@@ -38,9 +38,8 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
         description = "URI of the file containing data to be loaded into InfluxDB"
     )
     @NotNull
-    @PluginProperty(dynamic = true, internalStorageURI = true)
+    @PluginProperty(internalStorageURI = true)
     private Property<String> from;
-
 
     @Schema(
         title = "Chunk size for each bulk write request",

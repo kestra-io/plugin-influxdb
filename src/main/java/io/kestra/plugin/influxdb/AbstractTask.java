@@ -30,7 +30,6 @@ public abstract class AbstractTask extends Task {
         title = "InfluxDB bucket.",
         description = "The bucket to use for operations."
     )
-    @PluginProperty(dynamic = true)
     @NotNull
     protected Property<String> bucket;
 
@@ -38,7 +37,6 @@ public abstract class AbstractTask extends Task {
         title = "InfluxDB organization.",
         description = "The organization to use for operations."
     )
-    @PluginProperty(dynamic = true)
     @NotNull
     protected Property<String> org;
 

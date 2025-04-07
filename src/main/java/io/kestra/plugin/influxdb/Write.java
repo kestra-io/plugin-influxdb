@@ -58,7 +58,6 @@ public class Write extends AbstractTask implements RunnableTask<Write.Output> {
         description = "Multiline string in InfluxDB wire format (line protocol)"
     )
     @NotNull
-    @PluginProperty(dynamic = true)
     private Property<String> source;
 
     @Schema(
@@ -67,7 +66,6 @@ public class Write extends AbstractTask implements RunnableTask<Write.Output> {
         defaultValue = "NS"
     )
     @Builder.Default
-    @PluginProperty
     private Property<WritePrecision> precision = Property.of(WritePrecision.NS);
 
     @Override
