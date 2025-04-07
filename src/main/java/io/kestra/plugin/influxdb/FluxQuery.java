@@ -10,6 +10,7 @@ import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.executions.metrics.Counter;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
+import io.kestra.core.models.tasks.common.FetchType;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.serializers.FileSerde;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -121,12 +122,6 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
     private Property<String> query;
 
     @Schema(
-        title = "Whether to store the data from the query result into an ion serialized data file."
-    )
-    @Builder.Default
-    private Property<Boolean> store = Property.of(false);
-
-    @Schema(
         title = "The way you want to store the data.",
         description = "FETCH_ONE output the first row, "
             + "FETCH output all the rows, "
@@ -136,13 +131,6 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
     @PluginProperty
     @Builder.Default
     private Property<FetchType> fetchType = Property.of(FetchType.FETCH);
-
-    public enum FetchType {
-        FETCH,
-        FETCH_ONE,
-        STORE,
-        NONE
-    }
 
     @Override
     public Output run(RunContext runContext) throws Exception {
@@ -199,13 +187,9 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
 
     protected Pair<List<Map<String, Object>>, Integer> fetch(List<FluxTable> tables) {
         List<Map<String, Object>> results = new ArrayList<>();
-        int count = 0;
 
         for (FluxTable table : tables) {
             for (FluxRecord record : table.getRecords()) {
-                count++;
-
-                // Convert FluxRecord to Map with proper Java types
                 Map<String, Object> row = new HashMap<>();
                 record.getValues().forEach((key, value) -> {
                     if (value != null) {
@@ -217,7 +201,7 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
             }
         }
 
-        return Pair.of(results, count);
+        return Pair.of(results, results.size());
     }
 
     protected Map<String, Object> fetchOne(List<FluxTable> tables) {
@@ -266,12 +250,12 @@ public class FluxQuery extends AbstractTask implements RunnableTask<FluxQuery.Ou
     @Getter
     public static class Output implements io.kestra.core.models.tasks.Output {
         @Schema(
-            title = "The size of the rows fetched."
+            title = "The number of rows fetched."
         )
         private Integer size;
 
         @Schema(
-            title = "The total of the rows fetched without pagination."
+            title = "The total number of the rows fetched without pagination."
         )
         private Long total;
 

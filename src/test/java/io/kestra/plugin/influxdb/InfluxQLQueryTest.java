@@ -3,6 +3,7 @@ package io.kestra.plugin.influxdb;
 import com.google.common.collect.ImmutableMap;
 import io.kestra.core.junit.annotations.KestraTest;
 import io.kestra.core.models.property.Property;
+import io.kestra.core.models.tasks.common.FetchType;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.runners.RunContextFactory;
 import jakarta.inject.Inject;
@@ -30,7 +31,7 @@ class InfluxQLQueryTest {
             .org(Property.of("my-org"))
             .bucket(Property.of("test-bucket"))
             .query(Property.of("SELECT * FROM airSensors LIMIT 5"))
-            .fetchType(Property.of(InfluxQLQuery.FetchType.EXECUTION))
+            .fetchType(Property.of(FetchType.FETCH))
             .build();
 
         InfluxQLQuery.Output output = query.run(runContext);

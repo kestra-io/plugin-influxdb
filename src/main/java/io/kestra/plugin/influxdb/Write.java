@@ -1,7 +1,6 @@
 package io.kestra.plugin.influxdb;
 
 import com.influxdb.client.InfluxDBClient;
-import com.influxdb.client.WriteApi;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import io.kestra.core.models.annotations.Example;

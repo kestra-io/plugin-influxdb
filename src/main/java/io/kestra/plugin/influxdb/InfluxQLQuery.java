@@ -9,6 +9,7 @@ import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.executions.metrics.Counter;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
+import io.kestra.core.models.tasks.common.FetchType;
 import io.kestra.core.runners.RunContext;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -89,12 +90,7 @@ public class InfluxQLQuery extends AbstractTask implements RunnableTask<InfluxQL
     )
     @PluginProperty
     @Builder.Default
-    private Property<FetchType> fetchType = Property.of(FetchType.EXECUTION);
-
-    public enum FetchType {
-        EXECUTION,
-        ION
-    }
+    private Property<FetchType> fetchType = Property.of(FetchType.FETCH);
 
     @Override
     public Output run(RunContext runContext) throws Exception {
@@ -139,14 +135,14 @@ public class InfluxQLQuery extends AbstractTask implements RunnableTask<InfluxQL
             runContext.metric(Counter.of("records", recordCount));
 
             URI uri = null;
-            if (FetchType.ION.equals(runContext.render(fetchType).as(FetchType.class).orElseThrow())) {
+            if (FetchType.STORE.equals(runContext.render(fetchType).as(FetchType.class).orElseThrow())) {
                 File tempFile = runContext.workingDir().createTempFile(".ion").toFile();
                 uri = runContext.storage().putFile(tempFile);
             }
 
             return Output.builder()
                 .uri(uri)
-                .rows(FetchType.EXECUTION.equals(runContext.render(fetchType).as(FetchType.class).orElseThrow()) ? results : null)
+                .rows(FetchType.FETCH.equals(runContext.render(fetchType).as(FetchType.class).orElseThrow()) ? results : null)
                 .size(recordCount)
                 .build();
         }

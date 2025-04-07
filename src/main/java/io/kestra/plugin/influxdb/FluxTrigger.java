@@ -5,6 +5,7 @@ import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.conditions.ConditionContext;
 import io.kestra.core.models.executions.Execution;
 import io.kestra.core.models.property.Property;
+import io.kestra.core.models.tasks.common.FetchType;
 import io.kestra.core.models.triggers.*;
 import io.kestra.core.runners.RunContext;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,8 +44,9 @@ import java.util.Optional;
                   - id: watch
                     type: io.kestra.plugin.influxdb.FluxTrigger
                     interval: "PT5M"
-                    url: "{{ secret('INFLUXDB_URL') }}"
-                    token: "{{ secret('INFLUXDB_TOKEN') }}"
+                    connection:
+                        url: "{{ secret('INFLUXDB_URL') }}"
+                        token: "{{ secret('INFLUXDB_TOKEN') }}"
                     org: "{{ secret('INFLUXDB_ORG') }}"
                     query: |
                       from(bucket: "mybucket")
@@ -69,7 +71,7 @@ public class FluxTrigger extends AbstractTrigger implements PollingTriggerInterf
     private Property<String> query;
 
     @Builder.Default
-    private Property<FluxQuery.FetchType> fetchType = Property.of(FluxQuery.FetchType.FETCH);
+    private Property<FetchType> fetchType = Property.of(FetchType.FETCH);
 
     @Override
     public Optional<Execution> evaluate(ConditionContext conditionContext, TriggerContext context) throws Exception {

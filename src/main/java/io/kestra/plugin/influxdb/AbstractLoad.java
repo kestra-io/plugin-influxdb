@@ -61,7 +61,7 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
     @Override
     public Output run(RunContext runContext) throws Exception {
         Logger logger = runContext.logger();
-        URI from = new URI(runContext.render(this.from).as(String.class).orElseThrow());
+        URI from = URI.create(runContext.render(this.from).as(String.class).orElseThrow());
         AtomicInteger count = new AtomicInteger();
 
         try (
