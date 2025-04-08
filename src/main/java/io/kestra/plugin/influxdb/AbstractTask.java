@@ -2,7 +2,6 @@ package io.kestra.plugin.influxdb;
 
 import com.influxdb.client.InfluxDBClient;
 import io.kestra.core.exceptions.IllegalVariableEvaluationException;
-import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.Task;
 import io.kestra.core.runners.RunContext;
