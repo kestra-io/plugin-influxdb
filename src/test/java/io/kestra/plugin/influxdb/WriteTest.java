@@ -35,7 +35,6 @@ class WriteTest {
             .build();
 
         Write.Output output = task.run(runContext);
-        System.out.println(output.getRecordCount());
         assertThat(output.getRecordCount(), greaterThan(0));
     }
 }

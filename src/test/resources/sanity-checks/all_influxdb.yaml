@@ -1,5 +1,5 @@
 id: all_influxdb
-namespace: sanitycheck.plugin-influxdb
+namespace: sanitychecks.plugin-influxdb
 
 tasks:
   - id: init

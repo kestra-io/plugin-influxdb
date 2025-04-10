@@ -1,5 +1,5 @@
 id: load
-namespace: sanitycheck.plugin-influxdb
+namespace: sanitychecks.plugin-influxdb
 
 inputs:
   - id: cs
