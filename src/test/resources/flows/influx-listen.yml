@@ -12,13 +12,10 @@ triggers:
       from(bucket: "test-bucket")
         |> range(start: -1h)
         |> limit(n: 10)
+    fetchType: FETCH
     interval: PT10S
 
 tasks:
-  - id: each
-    type: io.kestra.plugin.core.flow.ForEach
-    values: "{{ trigger.rows }}"
-    tasks:
-      - id: return
-        type: io.kestra.plugin.core.debug.Return
-        format: "{{ json(taskrun.value) }}"
+  - id: end
+    type: io.kestra.plugin.core.debug.Return
+    format: "{{task.id}} > {{taskrun.startDate}}"

@@ -61,8 +61,7 @@ public class Write extends AbstractTask implements RunnableTask<Write.Output> {
 
     @Schema(
         title = "Write precision",
-        description = "The precision for the unix timestamps within the body line-protocol",
-        defaultValue = "NS"
+        description = "The precision for the unix timestamps within the body line-protocol"
     )
     @Builder.Default
     private Property<WritePrecision> precision = Property.of(WritePrecision.NS);

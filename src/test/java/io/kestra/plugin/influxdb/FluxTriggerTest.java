@@ -47,6 +47,9 @@ public class FluxTriggerTest {
     void run() throws Exception {
         Execution execution = triggerFlow();
 
+        System.out.println("Execution");
+        System.out.println(execution.getTrigger().getVariables());
+
         List<Map<String, Object>> rows = (List<Map<String, Object>>) execution.getTrigger().getVariables().get("rows");
 
         assertThat(rows.size(), greaterThan(0));
@@ -64,7 +67,7 @@ public class FluxTriggerTest {
         ) {
             Flux<Execution> receive = TestsUtils.receive(executionQueue, execution -> {
                 queueCount.countDown();
-                assertThat(execution.getLeft().getFlowId(), is("influxdb-listen"));
+                assertThat(execution.getLeft().getFlowId(), is("influx-listen"));
             });
 
             worker.run();
