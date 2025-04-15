@@ -11,6 +11,8 @@ triggers:
     query: |
       from(bucket: "test-bucket")
         |> range(start: -1h)
+        |> filter(fn: (r) => r._measurement == "air")
+        |> filter(fn: (r) => r._field == "co")
         |> limit(n: 10)
     fetchType: FETCH
     interval: PT10S

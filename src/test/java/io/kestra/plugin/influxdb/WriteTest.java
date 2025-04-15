@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @KestraTest
 class WriteTest {
@@ -35,6 +37,6 @@ class WriteTest {
             .build();
 
         Write.Output output = task.run(runContext);
-        assertThat(output.getRecordCount(), greaterThan(0));
+        assertThat(output.getRecordCount(), is(2));
     }
 }

@@ -31,7 +31,7 @@ tasks:
       air,sensor_id=TLM0100 humidity=35.23
       air,sensor_id=TLM0100 co=0.48
 
-  - id: flux_query
+  - id: query
     type: io.kestra.plugin.influxdb.FluxQuery
     connection:
       url: http://localhost:8086
@@ -42,16 +42,6 @@ tasks:
       |> range(start: -1h)
       |> filter(fn: (r) => r._measurement == "air")
       |> filter(fn: (r) => r.sensor_id == "TLM0100")
-
-  - id: query
-    type: io.kestra.plugin.influxdb.InfluxQLQuery
-    connection:
-      url: "{{ inputs.cs }}"
-      token: "{{ inputs.token }}"
-    org: "{{ inputs.org }}"
-    bucket: "{{ inputs.bucket }}"
-    query: "SELECT * FROM air WHERE time > now() - 10m"
-    fetchType: FETCH
 
   - id: assert
     type: io.kestra.plugin.core.execution.Assert

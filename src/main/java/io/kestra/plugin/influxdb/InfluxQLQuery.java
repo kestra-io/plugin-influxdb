@@ -16,11 +16,9 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @SuperBuilder
@@ -84,34 +82,51 @@ public class InfluxQLQuery extends AbstractQuery implements RunnableTask<Abstrac
 
             logger.debug("Starting query: {}", query);
 
-            InfluxQLQueryResult result = queryApi.query(
+            InfluxQLQueryResult queryResult = queryApi.query(
                 new com.influxdb.client.domain.InfluxQLQuery(renderedQuery, renderedBucket)
             );
 
-            List<Map<String, Object>> results = new ArrayList<>();
-
-            for (InfluxQLQueryResult.Result table : result.getResults()) {
-                for (InfluxQLQueryResult.Series series : table.getSeries()) {
-                    Map<String, Integer> columnIndexMap = series.getColumns();
-
-                    Map<Integer, String> indexToColumnName = columnIndexMap.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-
-                    for (InfluxQLQueryResult.Series.Record record : series.getValues()) {
-                        Object[] values = record.getValues();
-                        Map<String, Object> rowMap = new HashMap<>();
-
-                        for (int i = 0; i < values.length; i++) {
-                            String colName = indexToColumnName.get(i);
-                            if (colName != null && values[i] != null) {
-                                rowMap.put(colName, values[i]);
-                            }
-                        }
-
-                        results.add(rowMap);
+            List<Map<String, Object>> results = Optional.of(queryResult.getResults())
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(Objects::nonNull)
+                .flatMap(table -> Optional.of(table.getSeries())
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .filter(Objects::nonNull))
+                .flatMap(series -> {
+                    Map<String, Integer> columns = series.getColumns();
+                    if (columns.isEmpty()) {
+                        return Stream.empty();
                     }
-                }
-            }
+
+                    Map<Integer, String> indexToColumn = new HashMap<>();
+                    columns.forEach((name, index) -> indexToColumn.put(index, name));
+
+                    return Optional.of(series.getValues())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .map(record -> {
+                            Object[] values = record.getValues();
+                            if (values == null) {
+                                return Collections.<String, Object>emptyMap();
+                            }
+
+                            Map<String, Object> row = new HashMap<>();
+                            for (int i = 0; i < values.length; i++) {
+                                if (values[i] != null) {
+                                    String colName = indexToColumn.get(i);
+                                    if (colName != null) {
+                                        row.put(colName, values[i]);
+                                    }
+                                }
+                            }
+                            return row;
+                        })
+                        .filter(map -> !map.isEmpty());
+                })
+                .collect(Collectors.toList());
 
             runContext.metric(Counter.of("records", results.size()));
 

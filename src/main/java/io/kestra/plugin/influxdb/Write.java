@@ -15,6 +15,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
+
 /**
  * Task for writing line protocol data directly to InfluxDB
  */
@@ -80,7 +82,10 @@ public class Write extends AbstractTask implements RunnableTask<Write.Output> {
             WritePrecision renderedPrecision = runContext.render(precision).as(WritePrecision.class).orElse(WritePrecision.NS);
 
             writeApi.writeRecord(renderedBucket, renderedOrg, renderedPrecision, renderedSource);
-            int lineCount = renderedSource.split("\n").length;
+
+            int lineCount = (int) Arrays.stream(renderedSource.split("\n"))
+                .filter(line -> !line.trim().isEmpty())
+                .count();
 
             logger.info("Wrote {} lines of line protocol data to InfluxDB", lineCount);
             runContext.metric(Counter.of("records", lineCount));
