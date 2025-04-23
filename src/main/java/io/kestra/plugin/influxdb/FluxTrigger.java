@@ -22,7 +22,7 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Wait for Flux query on InfluxDB to return results."
+    title = "Trigger a flow on a Flux query of InfluxDB that returns results."
 )
 @Plugin(
     examples = {

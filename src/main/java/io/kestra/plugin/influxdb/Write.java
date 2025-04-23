@@ -26,13 +26,13 @@ import java.util.Arrays;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Write data to InfluxDB using line protocol",
-    description = "Write data to InfluxDB using InfluxDB line protocol format"
+    title = "Write data to InfluxDB using line protocol.",
+    description = "Write data to InfluxDB using InfluxDB line protocol format."
 )
 @Plugin(
     examples = {
         @Example(
-            title = "Write data to InfluxDB using line protocol",
+            title = "Write data to InfluxDB using line protocol.",
             full = true,
             code = """
                 id: influxdb_write

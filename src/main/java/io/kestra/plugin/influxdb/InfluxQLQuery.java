@@ -27,13 +27,13 @@ import java.util.stream.Stream;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Query InfluxDB using InfluxQL",
-    description = "Execute an InfluxQL query against InfluxDB"
+    title = "Query InfluxDB using InfluxQL.",
+    description = "Execute an InfluxQL query against InfluxDB."
 )
 @Plugin(
     examples = {
         @Example(
-            title = "Execute an InfluxQL query",
+            title = "Execute an InfluxQL query.",
             full = true,
             code = """
                 id: influxdb_query
