@@ -28,8 +28,8 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Query InfluxDB using Flux language",
-    description = "Execute a Flux query against InfluxDB"
+    title = "Query InfluxDB using Flux language.",
+    description = "Execute a Flux query against InfluxDB."
 )
 @Plugin(
     examples = {
@@ -56,7 +56,7 @@ import java.util.Map;
                 """
         ),
         @Example(
-            title = "Query data from InfluxDB and return all rows in execution output",
+            title = "Query data from InfluxDB and return all rows in execution output.",
             full = true,
             code = """
                 id: influxdb_flux_query_inline
@@ -79,7 +79,7 @@ import java.util.Map;
                 """
         ),
         @Example(
-            title = "Query data from InfluxDB and return only the first row",
+            title = "Query data from InfluxDB and return only the first row.",
             full = true,
             code = """
                 id: influxdb_flux_query_one

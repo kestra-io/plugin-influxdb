@@ -26,13 +26,13 @@ import static io.kestra.core.utils.Rethrow.throwFunction;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Load data points to InfluxDB from a file",
-    description = "Load data points to InfluxDB from an ION file where each record becomes a data point"
+    title = "Load data points to InfluxDB from a file.",
+    description = "Load data points to InfluxDB from an ION file where each record becomes a data point."
 )
 @Plugin(
     examples = {
         @Example(
-            title = "Load data points to InfluxDB from an ION file",
+            title = "Load data points to InfluxDB from an ION file.",
             full = true,
             code = """
                 id: influxdb_load
