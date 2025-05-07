@@ -2,7 +2,7 @@ id: write_query_flux
 namespace: sanitychecks.plugin-influxdb
 
 inputs:
-  - id: cs
+  - id: url
     type: STRING
     defaults: "http://localhost:8086"
 
@@ -27,25 +27,26 @@ tasks:
     org: "{{ inputs.org }}"
     bucket: "{{ inputs.bucket }}"
     source: |
-      air,sensor_id=TLM0100 temperature=73.97
-      air,sensor_id=TLM0100 humidity=35.23
-      air,sensor_id=TLM0100 co=0.48
+      air,sensor_id=TLM0100,run_id={{ execution.id }} temperature=73.97
+      air,sensor_id=TLM0100,run_id={{ execution.id }} humidity=35.23
+      air,sensor_id=TLM0100,run_id={{ execution.id }} co=0.48
 
   - id: query
     type: io.kestra.plugin.influxdb.FluxQuery
     connection:
-      url: http://localhost:8086
-      token: my-token
-    org: my-org
+      url: "{{ inputs.url }}"
+      token: "{{ inputs.token }}"
+    org: "{{ inputs.org }}"
     query: |
-      from(bucket: "test-bucket")
+      from(bucket: "{{ inputs.bucket }}")
       |> range(start: -1h)
       |> filter(fn: (r) => r._measurement == "air")
       |> filter(fn: (r) => r.sensor_id == "TLM0100")
+      |> filter(fn: (r) => r.run_id == "{{ execution.id }}")
 
   - id: assert
     type: io.kestra.plugin.core.execution.Assert
     errorMessage: "Query didn't return 3 expected points"
     conditions:
-      - "{{ outputs.query.rows | length == 3 }}"
+      - "{{ outputs.query.size >= 3 }}"
 

@@ -2,7 +2,7 @@ id: load
 namespace: sanitychecks.plugin-influxdb
 
 inputs:
-  - id: cs
+  - id: url
     type: STRING
     defaults: "http://localhost:8086"
 
@@ -24,22 +24,22 @@ tasks:
     content: |
       {
         "fields": {"temperature": 73.97},
-        "tags": {"sensor_id": "TLM0100"}
+        "tags": {"sensor_id": "TLM0100", "run_id": "{{ execution.id }}" }
       }
       {
         "fields": {"humidity": 35.23},
-        "tags": {"sensor_id": "TLM0100"}
+        "tags": {"sensor_id": "TLM0100", "run_id": "{{ execution.id }}" }
       }
       {
         "fields": {"co": 0.48},
-        "tags": {"sensor_id": "TLM0100"}
+        "tags": {"sensor_id": "TLM0100", "run_id": "{{ execution.id }}" }
       }
     extension: .ion
 
   - id: load
     type: io.kestra.plugin.influxdb.Load
     connection:
-      url: "{{ inputs.cs }}"
+      url: "{{ inputs.url }}"
       token: "{{ inputs.token }}"
     org: "{{ inputs.org }}"
     bucket: "{{ inputs.bucket }}"
@@ -50,5 +50,5 @@ tasks:
     type: io.kestra.plugin.core.execution.Assert
     errorMessage: "Query didn't return 3 expected points"
     conditions:
-      - "{{ outputs.query.recordCount | length == 3 }}"
+      - "{{ outputs.load.recordCount == 3 }}"
 
