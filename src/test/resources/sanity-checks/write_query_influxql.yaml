@@ -1,4 +1,4 @@
-id: write_test
+id: write_query_influxql
 namespace: sanitychecks.plugin-influxdb
 
 inputs:
