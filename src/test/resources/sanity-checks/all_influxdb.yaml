@@ -23,7 +23,7 @@ tasks:
 
   - id: sleep
     type: io.kestra.plugin.core.flow.Sleep
-    duration: PT10S
+    duration: PT45S
 
   - id: runSubflows
     type: io.kestra.plugin.core.flow.ForEach
