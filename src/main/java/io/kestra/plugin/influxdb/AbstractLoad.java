@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -78,14 +79,11 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
                 .map(points -> {
                     List<Point> batch = new ArrayList<>(points);
                     writeApi.writePoints(renderedBucket, renderedOrg, batch);
-
-                    logger.debug("Wrote batch of {} points", batch.size());
                     return batch.size();
                 })
                 .count();
 
             Long batchCount = result.block();
-            runContext.metric(Counter.of("batches.count", batchCount));
             runContext.metric(Counter.of("records", count.get()));
 
             logger.info(
