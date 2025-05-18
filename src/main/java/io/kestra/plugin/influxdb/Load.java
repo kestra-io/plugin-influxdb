@@ -21,10 +21,7 @@ import reactor.core.publisher.Flux;
 import java.io.BufferedReader;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static io.kestra.core.utils.Rethrow.throwFunction;
@@ -92,7 +89,6 @@ public class Load extends AbstractLoad {
         String renderedMeasurement = runContext.render(measurement).as(String.class).orElseThrow();
         String renderedTimeField = runContext.render(timeField).as(String.class).orElse(null);
         List<String> renderedTags = runContext.render(tags).asList(String.class);
-        Set<String> implicitTimeFieldNames = Set.of("time", "timestamp");
 
         return FileSerde.readAll(inputStream)
             .map(throwFunction(data -> {
@@ -102,8 +98,9 @@ public class Load extends AbstractLoad {
                 for (Map.Entry<String, Object> entry : values.entrySet()) {
                     String key = entry.getKey();
                     Object value = entry.getValue();
+
                     boolean isExplicitTimeField = key.equals(renderedTimeField);
-                    boolean isImplicitTimeField = renderedTimeField == null && implicitTimeFieldNames.contains(key);
+                    boolean isImplicitTimeField = renderedTimeField == null && "time".equalsIgnoreCase(key);
 
                     if (isExplicitTimeField || isImplicitTimeField) {
                         continue;
@@ -112,13 +109,24 @@ public class Load extends AbstractLoad {
                     if (renderedTags != null && renderedTags.contains(key)) {
                         point.addTag(key, value == null ? null : value.toString());
                     } else {
-                        point.addField(key, value.toString());
+                        switch (value) {
+                            case String s -> {
+                                try {
+                                    double parsed = Double.parseDouble(s);
+                                    point.addField(key, parsed);
+                                } catch (NumberFormatException e) {
+                                    point.addField(key, s);
+                                }
+                            }
+                            case Boolean b -> point.addField(key, b);
+                            case null, default -> point.addField(key, Objects.requireNonNull(value).toString());
+                        }
                     }
-                }
 
-                if (renderedTimeField != null && values.containsKey(renderedTimeField)) {
-                    Object timeValue = values.get(renderedTimeField);
-                    point.time(toInstant(timeValue), WritePrecision.NS);
+                    if (renderedTimeField != null && values.containsKey(renderedTimeField)) {
+                        Object timeValue = values.get(renderedTimeField);
+                        point.time(toInstant(timeValue), WritePrecision.NS);
+                    }
                 }
 
                 return point;

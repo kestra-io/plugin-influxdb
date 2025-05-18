@@ -81,13 +81,27 @@ public class TimeUtils {
     }
 
     private static Instant convertTemporal(TemporalAccessor temporal) {
-        return switch (temporal) {
-            case Instant i -> i;
-            case ZonedDateTime z -> z.toInstant();
-            case OffsetDateTime o -> o.toInstant();
-            case LocalDateTime l -> l.atZone(ZoneOffset.UTC).toInstant();
-            case LocalDate d -> d.atStartOfDay(ZoneOffset.UTC).toInstant();
-            default -> throw new DateTimeException("Unsupported temporal type");
-        };
+        try {
+            return Instant.from(temporal);
+        } catch (DateTimeException ignored) {}
+
+        try {
+            return ZonedDateTime.from(temporal).toInstant();
+        } catch (DateTimeException ignored) {}
+
+        try {
+            return OffsetDateTime.from(temporal).toInstant();
+        } catch (DateTimeException ignored) {}
+
+        try {
+            return LocalDateTime.from(temporal).atZone(ZoneOffset.UTC).toInstant();
+        } catch (DateTimeException ignored) {}
+
+        try {
+            return LocalDate.from(temporal).atStartOfDay(ZoneOffset.UTC).toInstant();
+        } catch (DateTimeException ignored) {}
+
+        throw new DateTimeException("Unsupported temporal type: " + temporal.getClass().getName());
     }
+
 }
