@@ -10,7 +10,7 @@ import io.kestra.core.storages.StorageInterface;
 import io.kestra.core.utils.IdUtils;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
-
+import static io.kestra.core.tenant.TenantService.MAIN_TENANT;
 import java.io.*;
 import java.net.URI;
 import java.time.Instant;
@@ -23,6 +23,9 @@ import static org.hamcrest.Matchers.*;
 class LoadTest {
     @Inject
     private RunContextFactory runContextFactory;
+
+    @Inject
+    private StorageInterface storageInterface;
 
     @Test
     void run() throws Exception {
@@ -40,7 +43,7 @@ class LoadTest {
             }
         }
 
-        URI fileUri = runContext.storage().putFile(tempFile);
+        URI uri = storageInterface.put(MAIN_TENANT, null, URI.create("/" + IdUtils.create() + ".ion"), new FileInputStream(tempFile));
 
         Load task = Load.builder()
             .connection(InfluxDBConnection.builder()
@@ -49,7 +52,7 @@ class LoadTest {
                 .build())
             .org(Property.of("my-org"))
             .bucket(Property.of("test-bucket"))
-            .from(Property.of(fileUri.toString()))
+            .from(Property.of(uri.toString()))
             .measurement(Property.of("sensor_data"))
             .tags(Property.of(List.of("sensor", "location")))
             .timeField(Property.of("time"))
