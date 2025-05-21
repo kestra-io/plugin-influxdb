@@ -130,11 +130,7 @@ public class InfluxQLQuery extends AbstractQuery implements RunnableTask<Abstrac
 
             runContext.metric(Counter.of("records", results.size()));
 
-            Output.OutputBuilder outputBuilder = handleFetchType(runContext, results);
-
-            return outputBuilder
-                .total((long) results.size())
-                .build();
+            return handleFetchType(runContext, results);
         }
     }
 }

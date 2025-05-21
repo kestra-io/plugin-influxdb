@@ -137,11 +137,7 @@ public class FluxQuery extends AbstractQuery implements RunnableTask<AbstractQue
 
             runContext.metric(Counter.of("records", results.size()));
 
-            Output.OutputBuilder outputBuilder = handleFetchType(runContext, results);
-
-            return outputBuilder
-                .total((long) results.size())
-                .build();
+            return handleFetchType(runContext, results);
         }
     }
 }
