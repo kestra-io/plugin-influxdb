@@ -51,8 +51,10 @@ public abstract class AbstractQuery extends AbstractTask {
         }
     }
 
-    protected Output.OutputBuilder handleFetchType(RunContext runContext, List<Map<String, Object>> allResults) throws Exception {
-        Output.OutputBuilder outputBuilder = Output.builder();
+    protected Output handleFetchType(RunContext runContext, List<Map<String, Object>> allResults) throws Exception {
+        Output.OutputBuilder outputBuilder = Output.builder()
+            .total((long) allResults.size());
+
         FetchType type = runContext.render(fetchType).as(FetchType.class).orElseThrow();
 
         switch (type) {
@@ -81,7 +83,7 @@ public abstract class AbstractQuery extends AbstractTask {
                 break;
         }
 
-        return outputBuilder;
+        return outputBuilder.build();
     }
 
     @Builder
