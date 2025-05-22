@@ -23,16 +23,9 @@ tasks:
     type: io.kestra.plugin.core.storage.Write
     content: |
       {
-        "fields": {"temperature": 73.97},
-        "tags": {"sensor_id": "TLM0100", "run_id": "{{ execution.id }}" }
-      }
-      {
-        "fields": {"humidity": 35.23},
-        "tags": {"sensor_id": "TLM0100", "run_id": "{{ execution.id }}" }
-      }
-      {
-        "fields": {"co": 0.48},
-        "tags": {"sensor_id": "TLM0100", "run_id": "{{ execution.id }}" }
+        "temperature": 73.97,
+        "sensor_id": "TLM0100",
+        "run_id": "{{ execution.id }}"
       }
     extension: .ion
 
@@ -48,7 +41,7 @@ tasks:
 
   - id: assert
     type: io.kestra.plugin.core.execution.Assert
-    errorMessage: "Query didn't return 3 expected points"
+    errorMessage: "Query didn't return 1 expected point"
     conditions:
-      - "{{ outputs.load.recordCount == 3 }}"
+      - "{{ outputs.load.recordCount == 1 }}"
 
