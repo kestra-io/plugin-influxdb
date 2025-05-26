@@ -53,7 +53,7 @@ dependencies {
     compileOnly group: "io.kestra", name: "script", version: kestraVersion
 
     // InfluxDB deps
-    api 'com.influxdb:influxdb-client-java:7.2.0'
+    api 'com.influxdb:influxdb-client-java:7.3.0'
 
 }
 
