@@ -39,7 +39,7 @@ public abstract class AbstractQuery extends AbstractTask {
             + "NONE do nothing."
     )
     @Builder.Default
-    protected Property<FetchType> fetchType = Property.of(FetchType.NONE);
+    protected Property<FetchType> fetchType = Property.ofValue(FetchType.NONE);
 
     protected URI storeResults(RunContext runContext, List<Map<String, Object>> results) throws IOException {
         File tempFile = runContext.workingDir().createTempFile(".ion").toFile();
