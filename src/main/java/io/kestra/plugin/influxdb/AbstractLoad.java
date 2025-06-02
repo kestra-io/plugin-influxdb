@@ -47,7 +47,7 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
         description = "Number of points to include in each write batch"
     )
     @Builder.Default
-    private Property<Integer> chunk = Property.of(1000);
+    private Property<Integer> chunk = Property.ofValue(1000);
 
     /**
      * Abstract method to transform input data into Points

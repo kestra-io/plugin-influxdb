@@ -24,12 +24,12 @@ class WriteTest {
 
         Write task = Write.builder()
             .connection(InfluxDBConnection.builder()
-                .url(Property.of("http://localhost:8086"))
-                .token(Property.of("my-token"))
+                .url(Property.ofValue("http://localhost:8086"))
+                .token(Property.ofValue("my-token"))
                 .build())
-            .org(Property.of("my-org"))
-            .bucket(Property.of("test-bucket"))
-            .source(Property.of("""
+            .org(Property.ofValue("my-org"))
+            .bucket(Property.ofValue("test-bucket"))
+            .source(Property.ofValue("""
                 airSensors,sensor_id=KLM0100 temperature=71.21211174013729,humidity=35.12317300691224,co=0.48881420596033176
                 airSensors,sensor_id=KLM0200 temperature=71.21211174013729,humidity=35.12317300691224,co=0.48881420596033176
 

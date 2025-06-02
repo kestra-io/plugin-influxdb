@@ -25,13 +25,13 @@ class InfluxQLQueryTest {
 
         InfluxQLQuery query = InfluxQLQuery.builder()
             .connection(InfluxDBConnection.builder()
-                .url(Property.of("http://localhost:8086"))
-                .token(Property.of("my-token"))
+                .url(Property.ofValue("http://localhost:8086"))
+                .token(Property.ofValue("my-token"))
                 .build())
-            .org(Property.of("my-org"))
-            .bucket(Property.of("test-bucket"))
-            .query(Property.of("SELECT * FROM airSensors LIMIT 5"))
-            .fetchType(Property.of(FetchType.FETCH))
+            .org(Property.ofValue("my-org"))
+            .bucket(Property.ofValue("test-bucket"))
+            .query(Property.ofValue("SELECT * FROM airSensors LIMIT 5"))
+            .fetchType(Property.ofValue(FetchType.FETCH))
             .build();
 
         InfluxQLQuery.Output output = query.run(runContext);

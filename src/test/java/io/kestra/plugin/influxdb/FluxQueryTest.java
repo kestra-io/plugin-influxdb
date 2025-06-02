@@ -23,12 +23,12 @@ class FluxQueryTest {
 
         FluxQuery query = FluxQuery.builder()
             .connection(InfluxDBConnection.builder()
-                .url(Property.of("http://localhost:8086"))
-                .token(Property.of("my-token"))
+                .url(Property.ofValue("http://localhost:8086"))
+                .token(Property.ofValue("my-token"))
                 .build())
-            .org(Property.of("my-org"))
-            .query(Property.of("from(bucket: \"test-bucket\") |> range(start: -1h) |> limit(n: 10)"))
-            .fetchType(Property.of(FetchType.FETCH))
+            .org(Property.ofValue("my-org"))
+            .query(Property.ofValue("from(bucket: \"test-bucket\") |> range(start: -1h) |> limit(n: 10)"))
+            .fetchType(Property.ofValue(FetchType.FETCH))
             .build();
 
         FluxQuery.Output output = query.run(runContext);
