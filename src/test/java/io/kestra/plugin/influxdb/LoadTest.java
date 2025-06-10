@@ -47,15 +47,15 @@ class LoadTest {
 
         Load task = Load.builder()
             .connection(InfluxDBConnection.builder()
-                .url(Property.of("http://localhost:8086"))
-                .token(Property.of("my-token"))
+                .url(Property.ofValue("http://localhost:8086"))
+                .token(Property.ofValue("my-token"))
                 .build())
-            .org(Property.of("my-org"))
-            .bucket(Property.of("test-bucket"))
-            .from(Property.of(uri.toString()))
-            .measurement(Property.of("sensor_data"))
-            .tags(Property.of(List.of("sensor", "location")))
-            .timeField(Property.of("time"))
+            .org(Property.ofValue("my-org"))
+            .bucket(Property.ofValue("test-bucket"))
+            .from(Property.ofValue(uri.toString()))
+            .measurement(Property.ofValue("sensor_data"))
+            .tags(Property.ofValue(List.of("sensor", "location")))
+            .timeField(Property.ofValue("time"))
             .build();
 
         Load.Output output = task.run(runContext);

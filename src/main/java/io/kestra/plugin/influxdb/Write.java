@@ -66,7 +66,7 @@ public class Write extends AbstractTask implements RunnableTask<Write.Output> {
         description = "The precision for the unix timestamps within the body line-protocol"
     )
     @Builder.Default
-    private Property<WritePrecision> precision = Property.of(WritePrecision.NS);
+    private Property<WritePrecision> precision = Property.ofValue(WritePrecision.NS);
 
     @Override
     public Output run(RunContext runContext) throws Exception {
