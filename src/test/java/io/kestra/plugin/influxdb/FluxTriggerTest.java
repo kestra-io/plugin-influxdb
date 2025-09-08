@@ -11,6 +11,7 @@ import io.kestra.core.utils.IdUtils;
 import io.kestra.core.utils.TestsUtils;
 import io.kestra.jdbc.runner.JdbcScheduler;
 import io.kestra.scheduler.AbstractScheduler;
+import io.kestra.worker.DefaultWorker;
 import io.micronaut.context.ApplicationContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -20,6 +21,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -61,7 +63,7 @@ public class FluxTriggerTest {
 
         try (
             AbstractScheduler scheduler = new JdbcScheduler(applicationContext, flowListenersService);
-            Worker worker = applicationContext.createBean(Worker.class, IdUtils.create(), 8, null)
+            DefaultWorker worker = applicationContext.createBean(DefaultWorker.class, UUID.randomUUID().toString(), 8, null);
         ) {
             Flux<Execution> receive = TestsUtils.receive(executionQueue, execution -> {
                 queueCount.countDown();
