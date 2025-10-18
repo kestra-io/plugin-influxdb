@@ -56,7 +56,7 @@ import java.util.Arrays;
     metrics = { 
         @Metric(
             name = "records", 
-            type = COUNTER.TYPE,
+            type = Counter.TYPE,
             unit = "count",
             description = "The number of records written to InfluxDB"
             )
