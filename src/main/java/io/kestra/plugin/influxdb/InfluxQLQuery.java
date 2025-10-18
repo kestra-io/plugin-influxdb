@@ -4,6 +4,7 @@ import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxQLQueryApi;
 import com.influxdb.query.InfluxQLQueryResult;
 import io.kestra.core.models.annotations.Example;
+import io.kestra.core.models.annotations.Metric;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.executions.metrics.Counter;
 import io.kestra.core.models.tasks.RunnableTask;
@@ -67,6 +68,14 @@ import java.util.stream.Stream;
                     query: "SELECT * FROM measurement WHERE time > now() - 1h"
                     fetchType: ION
                 """
+        )
+    },
+    metrics = {
+        @Metric(
+            name = "records",
+            type = Counter.TYPE,
+            unit = "count",
+            description = "The number of records returned by the query"
         )
     }
 )

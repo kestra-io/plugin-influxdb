@@ -4,6 +4,7 @@ import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import io.kestra.core.models.annotations.Example;
+import io.kestra.core.models.annotations.Metric;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.executions.metrics.Counter;
 import io.kestra.core.models.property.Property;
@@ -51,6 +52,14 @@ import java.util.Arrays;
                       measurement,tag=value2 field=2.0
                 """
         )
+    },
+    metrics = { 
+        @Metric(
+            name = "records", 
+            type = Counter.TYPE,
+            unit = "count",
+            description = "The number of records written to InfluxDB"
+            )
     }
 )
 public class Write extends AbstractTask implements RunnableTask<Write.Output> {
