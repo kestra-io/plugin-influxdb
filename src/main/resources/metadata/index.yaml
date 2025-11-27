@@ -1,0 +1,8 @@
+group: io.kestra.plugin.influxdb
+name: "influxdb"
+title: "InfluxDB"
+description: "Plugin for interacting with InfluxDB time series database."
+body: ""
+videos: []
+createdBy: "Kestra Core Team"
+managedBy: "Kestra Core Team"
