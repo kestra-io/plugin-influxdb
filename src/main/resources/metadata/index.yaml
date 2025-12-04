@@ -1,8 +1,8 @@
 group: io.kestra.plugin.influxdb
 name: "influxdb"
 title: "InfluxDB"
-description: "Plugin for interacting with InfluxDB time series database."
-body: ""
+description: "Tasks that query and write time series data in InfluxDB."
+body: "Provide connection details (URL, org, bucket, token, or username/password) to run Flux or InfluxQL queries, write points, load files, or trigger flows on query results, with optional time ranges and precision settings."
 videos: []
 createdBy: "Kestra Core Team"
 managedBy: "Kestra Core Team"
