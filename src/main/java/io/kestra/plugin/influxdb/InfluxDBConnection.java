@@ -4,15 +4,13 @@ import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.InfluxDBClientOptions;
 import io.kestra.core.exceptions.IllegalVariableEvaluationException;
+import io.kestra.core.http.client.configurations.HttpConfiguration;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.runners.RunContext;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import okhttp3.OkHttpClient;
 
@@ -44,25 +42,25 @@ public class InfluxDBConnection {
         title = "Connection timeout.",
         description = "Connection establishment timeout (ISO-8601 duration, e.g. `PT10S`). Default is 10 seconds."
     )
-    protected Property<Duration> connectTimeout;
+    @Builder.Default
+    protected Property<Duration> connectTimeout = Property.ofValue(Duration.ofSeconds(10));
 
     @Schema(
         title = "Read timeout.",
         description = "Maximum time to wait for response bytes (including initial response) (ISO-8601 duration, e.g. `PT10S`). Default is 10 seconds."
     )
-    protected Property<Duration> readTimeout;
+    @Builder.Default
+    protected Property<Duration> readTimeout = Property.ofValue(Duration.ofSeconds(10));
 
     protected InfluxDBClient client(RunContext runContext) throws IllegalVariableEvaluationException {
         String renderedUrl = runContext.render(url).as(String.class).orElseThrow();
         String renderedToken = runContext.render(token).as(String.class).orElseThrow();
-
-        if (connectTimeout == null && readTimeout == null) {
-            return InfluxDBClientFactory.create(renderedUrl, renderedToken.toCharArray());
-        }
+        Duration rConnectTimeout = runContext.render(connectTimeout).as(Duration.class).orElse(Duration.ofSeconds(10));
+        Duration rReadTimeout = runContext.render(readTimeout).as(Duration.class).orElse(Duration.ofSeconds(10));
 
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
-        renderTimeout(runContext, connectTimeout).ifPresent(duration -> okHttpClient.connectTimeout(duration.toMillis(), TimeUnit.MILLISECONDS));
-        renderTimeout(runContext, readTimeout).ifPresent(duration -> okHttpClient.readTimeout(duration.toMillis(), TimeUnit.MILLISECONDS));
+        okHttpClient.connectTimeout(rConnectTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        okHttpClient.readTimeout(rReadTimeout.toMillis(), TimeUnit.MILLISECONDS);
 
         InfluxDBClientOptions options = InfluxDBClientOptions.builder()
             .url(renderedUrl)
@@ -71,22 +69,5 @@ public class InfluxDBConnection {
             .build();
 
         return InfluxDBClientFactory.create(options);
-    }
-
-    private static Optional<Duration> renderTimeout(RunContext runContext, Property<Duration> timeout) throws IllegalVariableEvaluationException {
-        if (timeout == null) {
-            return Optional.empty();
-        }
-
-        Duration rendered = runContext.render(timeout).as(Duration.class).orElse(null);
-        if (rendered == null) {
-            return Optional.empty();
-        }
-
-        if (rendered.isNegative() || rendered.isZero()) {
-            throw new IllegalArgumentException("Timeout durations must be > 0");
-        }
-
-        return Optional.of(rendered);
     }
 }
