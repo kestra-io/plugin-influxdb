@@ -29,8 +29,8 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Query InfluxDB using Flux language.",
-    description = "Execute a Flux query against InfluxDB."
+    title = "Run Flux query against InfluxDB",
+    description = "Executes a Flux query for a given organization. The bucket parameter is ignored because the query embeds it; `fetchType` controls whether rows are returned, stored as ION, or only counted."
 )
 @Plugin(
     examples = {

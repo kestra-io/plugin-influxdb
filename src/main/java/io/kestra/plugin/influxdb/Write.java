@@ -27,8 +27,8 @@ import java.util.Arrays;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Write data to InfluxDB using line protocol.",
-    description = "Write data to InfluxDB using InfluxDB line protocol format."
+    title = "Write line protocol to InfluxDB",
+    description = "Sends raw InfluxDB line protocol to a bucket/org with configurable timestamp precision (default nanoseconds). Counts and reports written lines."
 )
 @Plugin(
     examples = {
@@ -64,15 +64,15 @@ import java.util.Arrays;
 )
 public class Write extends AbstractTask implements RunnableTask<Write.Output> {
     @Schema(
-        title = "Data in InfluxDB line protocol format",
-        description = "Multiline string in InfluxDB wire format (line protocol)"
+        title = "Line protocol payload",
+        description = "Multiline string in InfluxDB line protocol"
     )
     @NotNull
     private Property<String> source;
 
     @Schema(
-        title = "Write precision",
-        description = "The precision for the unix timestamps within the body line-protocol"
+        title = "Timestamp precision",
+        description = "Precision applied to unix timestamps in the payload; defaults to nanoseconds"
     )
     @Builder.Default
     private Property<WritePrecision> precision = Property.ofValue(WritePrecision.NS);
