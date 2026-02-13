@@ -25,18 +25,15 @@ import java.util.Map;
 @NoArgsConstructor
 public abstract class AbstractQuery extends AbstractTask {
     @Schema(
-        title = "Query to execute",
-        description = "Query to run against InfluxDB"
+        title = "Query string",
+        description = "Flux or InfluxQL statement to run against InfluxDB"
     )
     @NotNull
     protected Property<String> query;
 
     @Schema(
-        title = "The way you want to store the data.",
-        description = "FETCH_ONE output the first row, "
-            + "FETCH output all the rows, "
-            + "STORE store all rows in a file, "
-            + "NONE do nothing."
+        title = "Fetch behavior",
+        description = "`FETCH_ONE` returns the first row, `FETCH` returns all rows, `STORE` writes rows to an ION file, `NONE` only records metrics; default is `NONE`"
     )
     @Builder.Default
     protected Property<FetchType> fetchType = Property.ofValue(FetchType.NONE);
@@ -90,30 +87,30 @@ public abstract class AbstractQuery extends AbstractTask {
     @Getter
     public static class Output implements io.kestra.core.models.tasks.Output {
         @Schema(
-            title = "The number of rows fetched."
+            title = "Number of rows returned"
         )
         private Integer size;
 
         @Schema(
-            title = "The total number of the rows fetched without pagination."
+            title = "Total rows without pagination"
         )
         private Long total;
 
         @Schema(
-            title = "List containing the fetched data.",
-            description = "Only populated if using `fetchType=FETCH`."
+            title = "Fetched rows",
+            description = "Only populated when `fetchType=FETCH`"
         )
         private List<Map<String, Object>> rows;
 
         @Schema(
-            title = "Map containing the first row of fetched data.",
-            description = "Only populated if using `fetchType=FETCH_ONE`."
+            title = "First fetched row",
+            description = "Only populated when `fetchType=FETCH_ONE`"
         )
         private Map<String, Object> row;
 
         @Schema(
-            title = "The URI of the stored data.",
-            description = "Only populated if using `fetchType=STORE`."
+            title = "URI of stored data",
+            description = "Only populated when `fetchType=STORE`"
         )
         private URI uri;
     }

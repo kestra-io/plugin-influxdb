@@ -20,20 +20,21 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public abstract class AbstractTask extends Task {
     @Schema(
-        title = "InfluxDB connection properties."
+        title = "InfluxDB connection",
+        description = "Connection settings (URL, token, optional options) reused across tasks"
     )
     @NotNull
     protected InfluxDBConnection connection;
 
     @Schema(
-        title = "InfluxDB bucket.",
-        description = "The bucket to use for operations."
+        title = "Bucket name",
+        description = "Target bucket for write/query operations when required; ignored by Flux queries"
     )
     protected Property<String> bucket;
 
     @Schema(
-        title = "InfluxDB organization.",
-        description = "The organization to use for operations."
+        title = "Organization name",
+        description = "Organization scope for queries and writes"
     )
     @NotNull
     protected Property<String> org;

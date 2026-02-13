@@ -47,16 +47,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 )
 public abstract class AbstractLoad extends AbstractTask implements RunnableTask<AbstractLoad.Output> {
     @Schema(
-        title = "The source file URI",
-        description = "URI of the file containing data to be loaded into InfluxDB"
+        title = "Source file URI",
+        description = "URI in internal storage (e.g., `kestra://...`) containing the data to load"
     )
     @NotNull
     @PluginProperty(internalStorageURI = true)
     private Property<String> from;
 
     @Schema(
-        title = "Chunk size for each bulk write request",
-        description = "Number of points to include in each write batch"
+        title = "Chunk size per write",
+        description = "Number of points per batch when writing to InfluxDB; defaults to 1000"
     )
     @Builder.Default
     private Property<Integer> chunk = Property.ofValue(1000);
