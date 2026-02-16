@@ -28,8 +28,8 @@ import java.util.stream.Stream;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Query InfluxDB using InfluxQL.",
-    description = "Execute an InfluxQL query against InfluxDB."
+    title = "Run InfluxQL query against InfluxDB",
+    description = "Executes an InfluxQL query for the specified bucket and organization. `fetchType` controls whether rows are returned inline, stored, or just counted."
 )
 @Plugin(
     examples = {

@@ -33,8 +33,8 @@ import static io.kestra.plugin.influxdb.utils.TimeUtils.toInstant;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Load data points to InfluxDB from a file.",
-    description = "Load data points to InfluxDB from an ION file where each record becomes a data point."
+    title = "Load ION records into InfluxDB",
+    description = "Reads an ION file from internal storage and writes each object as a point to InfluxDB with nanosecond precision. Uses the provided `measurement`, batches writes in chunks of 1000 by default, and skips a `time` field unless `timeField` is set so InfluxDB assigns the server timestamp."
 )
 @Plugin(
     examples = {
@@ -65,21 +65,21 @@ import static io.kestra.plugin.influxdb.utils.TimeUtils.toInstant;
 )
 public class Load extends AbstractLoad {
     @Schema(
-        title = "Measurement name",
-        description = "The measurement name to be used for all points from the ION file"
+        title = "Measurement for all points",
+        description = "Measurement applied to every point from the ION file"
     )
     @NotNull
     private Property<String> measurement;
 
     @Schema(
-        title = "List of field names to use as tags",
-        description = "Fields listed here will be added as tags; all others will be added as fields"
+        title = "Fields treated as tags",
+        description = "Fields listed here are stored as tags; remaining keys become fields"
     )
     private Property<List<String>> tags;
 
     @Schema(
-        title = "Field name to use as timestamp",
-        description = "The field containing timestamp values. If null, InfluxDB will use the current time."
+        title = "Timestamp field name",
+        description = "Field whose value becomes the point timestamp with nanosecond precision; when unset a `time` key is skipped and InfluxDB assigns the server time"
     )
     private Property<String> timeField;
 

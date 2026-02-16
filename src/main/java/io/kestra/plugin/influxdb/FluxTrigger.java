@@ -22,7 +22,8 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Trigger a flow on a Flux query of InfluxDB that returns results."
+    title = "Trigger flow when Flux query returns rows",
+    description = "Polls a Flux query at a fixed interval (default 60 seconds) and starts a flow when at least one row is returned; `fetchType` mirrors FluxQuery output handling."
 )
 @Plugin(
     examples = {
