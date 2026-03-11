@@ -1,8 +1,13 @@
 package io.kestra.plugin.influxdb;
 
+import java.util.Arrays;
+
+import org.slf4j.Logger;
+
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
+
 import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Metric;
 import io.kestra.core.models.annotations.Plugin;
@@ -10,13 +15,11 @@ import io.kestra.core.models.executions.metrics.Counter;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.slf4j.Logger;
-
-import java.util.Arrays;
 
 /**
  * Task for writing line protocol data directly to InfluxDB
@@ -53,13 +56,13 @@ import java.util.Arrays;
                 """
         )
     },
-    metrics = { 
+    metrics = {
         @Metric(
-            name = "records", 
+            name = "records",
             type = Counter.TYPE,
             unit = "count",
             description = "The number of records written to InfluxDB"
-            )
+        )
     }
 )
 public class Write extends AbstractTask implements RunnableTask<Write.Output> {

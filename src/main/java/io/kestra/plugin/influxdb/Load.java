@@ -1,14 +1,17 @@
 package io.kestra.plugin.influxdb;
 
+import java.io.BufferedReader;
+import java.util.*;
+
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
+
 import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.serializers.FileSerde;
-import io.kestra.core.utils.DateUtils;
-import io.kestra.plugin.influxdb.utils.TimeUtils;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
@@ -17,12 +20,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import reactor.core.publisher.Flux;
-
-import java.io.BufferedReader;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import static io.kestra.core.utils.Rethrow.throwFunction;
 import static io.kestra.plugin.influxdb.utils.TimeUtils.toInstant;
@@ -91,7 +88,8 @@ public class Load extends AbstractLoad {
         List<String> renderedTags = runContext.render(tags).asList(String.class);
 
         return FileSerde.readAll(inputStream)
-            .map(throwFunction(data -> {
+            .map(throwFunction(data ->
+            {
                 Map<String, Object> values = (Map<String, Object>) data;
                 Point point = Point.measurement(renderedMeasurement);
 

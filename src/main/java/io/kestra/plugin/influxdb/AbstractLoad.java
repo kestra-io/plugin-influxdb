@@ -1,8 +1,18 @@
 package io.kestra.plugin.influxdb;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.write.Point;
+
 import io.kestra.core.models.annotations.Metric;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.annotations.PluginProperty;
@@ -11,21 +21,13 @@ import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.serializers.FileSerde;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.slf4j.Logger;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Abstract base class for loading data to InfluxDB from files
@@ -88,7 +90,8 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
             Mono<Long> result = this.source(runContext, inputStream)
                 .doOnNext(point -> count.incrementAndGet())
                 .buffer(renderedChunk)
-                .map(points -> {
+                .map(points ->
+                {
                     List<Point> batch = new ArrayList<>(points);
                     writeApi.writePoints(renderedBucket, renderedOrg, batch);
                     return batch.size();

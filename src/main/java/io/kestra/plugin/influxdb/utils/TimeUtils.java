@@ -28,7 +28,8 @@ public class TimeUtils {
     }
 
     public static Instant toInstant(Object input) {
-        if (input == null) return null;
+        if (input == null)
+            return null;
 
         return switch (input) {
             case Instant instant -> instant;
@@ -46,9 +47,7 @@ public class TimeUtils {
     }
 
     private static Instant parseEpoch(long epoch) {
-        return epoch < 10_000_000_000L ?
-            Instant.ofEpochSecond(epoch) :
-            Instant.ofEpochMilli(epoch);
+        return epoch < 10_000_000_000L ? Instant.ofEpochSecond(epoch) : Instant.ofEpochMilli(epoch);
     }
 
     private static Instant parseString(String str) {
@@ -62,19 +61,22 @@ public class TimeUtils {
 
         try {
             return Instant.parse(str);
-        } catch (DateTimeException ignored) {}
+        } catch (DateTimeException ignored) {
+        }
 
         if (NEEDS_TIMEZONE.matcher(str).matches()) {
             try {
                 return Instant.parse(str + "Z");
-            } catch (DateTimeException ignored) {}
+            } catch (DateTimeException ignored) {
+            }
         }
 
         for (var formatter : FORMATTERS) {
             try {
                 var temporal = formatter.withZone(ZoneOffset.UTC).parse(str);
                 return convertTemporal(temporal);
-            } catch (DateTimeParseException ignored) {}
+            } catch (DateTimeParseException ignored) {
+            }
         }
 
         throw new IllegalArgumentException("Unparseable date string: " + str);
@@ -83,23 +85,28 @@ public class TimeUtils {
     private static Instant convertTemporal(TemporalAccessor temporal) {
         try {
             return Instant.from(temporal);
-        } catch (DateTimeException ignored) {}
+        } catch (DateTimeException ignored) {
+        }
 
         try {
             return ZonedDateTime.from(temporal).toInstant();
-        } catch (DateTimeException ignored) {}
+        } catch (DateTimeException ignored) {
+        }
 
         try {
             return OffsetDateTime.from(temporal).toInstant();
-        } catch (DateTimeException ignored) {}
+        } catch (DateTimeException ignored) {
+        }
 
         try {
             return LocalDateTime.from(temporal).atZone(ZoneOffset.UTC).toInstant();
-        } catch (DateTimeException ignored) {}
+        } catch (DateTimeException ignored) {
+        }
 
         try {
             return LocalDate.from(temporal).atStartOfDay(ZoneOffset.UTC).toInstant();
-        } catch (DateTimeException ignored) {}
+        } catch (DateTimeException ignored) {
+        }
 
         throw new DateTimeException("Unsupported temporal type: " + temporal.getClass().getName());
     }

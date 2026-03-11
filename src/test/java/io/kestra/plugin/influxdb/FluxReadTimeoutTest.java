@@ -1,14 +1,5 @@
 package io.kestra.plugin.influxdb;
 
-import com.google.common.collect.ImmutableMap;
-import io.kestra.core.junit.annotations.KestraTest;
-import io.kestra.core.models.property.Property;
-import io.kestra.core.models.tasks.common.FetchType;
-import io.kestra.core.runners.RunContext;
-import io.kestra.core.runners.RunContextFactory;
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -16,7 +7,18 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.Executors;
 
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableMap;
 import com.sun.net.httpserver.HttpServer;
+
+import io.kestra.core.junit.annotations.KestraTest;
+import io.kestra.core.models.property.Property;
+import io.kestra.core.models.tasks.common.FetchType;
+import io.kestra.core.runners.RunContext;
+import io.kestra.core.runners.RunContextFactory;
+
+import jakarta.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -41,11 +43,13 @@ class FluxReadTimeoutTest {
             RunContext runContext = runContextFactory.of(ImmutableMap.of());
 
             FluxQuery query = FluxQuery.builder()
-                .connection(InfluxDBConnection.builder()
-                    .url(Property.ofValue(server.baseUrl()))
-                    .token(Property.ofValue("my-token"))
-                    .readTimeout(Property.ofValue(Duration.ofMillis(200)))
-                    .build())
+                .connection(
+                    InfluxDBConnection.builder()
+                        .url(Property.ofValue(server.baseUrl()))
+                        .token(Property.ofValue("my-token"))
+                        .readTimeout(Property.ofValue(Duration.ofMillis(200)))
+                        .build()
+                )
                 .org(Property.ofValue("my-org"))
                 .query(Property.ofValue("from(bucket: \"test-bucket\") |> range(start: -1h) |> limit(n: 1)"))
                 .fetchType(Property.ofValue(FetchType.FETCH))
@@ -62,11 +66,13 @@ class FluxReadTimeoutTest {
             RunContext runContext = runContextFactory.of(ImmutableMap.of());
 
             FluxQuery query = FluxQuery.builder()
-                .connection(InfluxDBConnection.builder()
-                    .url(Property.ofValue(server.baseUrl()))
-                    .token(Property.ofValue("my-token"))
-                    .readTimeout(Property.ofValue(Duration.ofSeconds(2)))
-                    .build())
+                .connection(
+                    InfluxDBConnection.builder()
+                        .url(Property.ofValue(server.baseUrl()))
+                        .token(Property.ofValue("my-token"))
+                        .readTimeout(Property.ofValue(Duration.ofSeconds(2)))
+                        .build()
+                )
                 .org(Property.ofValue("my-org"))
                 .query(Property.ofValue("from(bucket: \"test-bucket\") |> range(start: -1h) |> limit(n: 1)"))
                 .fetchType(Property.ofValue(FetchType.FETCH))
@@ -108,7 +114,8 @@ class FluxReadTimeoutTest {
         static DelayedInfluxServer start(Duration bodyDelay, String responseBody) throws IOException {
             HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
             server.setExecutor(Executors.newCachedThreadPool());
-            server.createContext("/", exchange -> {
+            server.createContext("/", exchange ->
+            {
                 try {
                     exchange.getRequestBody().readAllBytes();
 

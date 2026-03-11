@@ -1,26 +1,28 @@
 package io.kestra.plugin.influxdb;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxQLQueryApi;
 import com.influxdb.query.InfluxQLQueryResult;
+
 import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Metric;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.executions.metrics.Counter;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.slf4j.Logger;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 
 @SuperBuilder
 @ToString
@@ -99,11 +101,14 @@ public class InfluxQLQuery extends AbstractQuery implements RunnableTask<Abstrac
                 .orElse(Collections.emptyList())
                 .stream()
                 .filter(Objects::nonNull)
-                .flatMap(table -> Optional.of(table.getSeries())
-                    .orElse(Collections.emptyList())
-                    .stream()
-                    .filter(Objects::nonNull))
-                .flatMap(series -> {
+                .flatMap(
+                    table -> Optional.of(table.getSeries())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .filter(Objects::nonNull)
+                )
+                .flatMap(series ->
+                {
                     Map<String, Integer> columns = series.getColumns();
                     if (columns.isEmpty()) {
                         return Stream.empty();
@@ -116,10 +121,11 @@ public class InfluxQLQuery extends AbstractQuery implements RunnableTask<Abstrac
                         .orElse(Collections.emptyList())
                         .stream()
                         .filter(Objects::nonNull)
-                        .map(record -> {
+                        .map(record ->
+                        {
                             Object[] values = record.getValues();
                             if (values == null) {
-                                return Collections.<String, Object>emptyMap();
+                                return Collections.<String, Object> emptyMap();
                             }
 
                             Map<String, Object> row = new HashMap<>();
