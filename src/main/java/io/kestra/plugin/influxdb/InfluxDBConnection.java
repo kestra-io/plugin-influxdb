@@ -17,6 +17,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import okhttp3.OkHttpClient;
+import io.kestra.core.models.annotations.PluginProperty;
 
 @SuperBuilder
 @ToString
@@ -43,6 +44,7 @@ public class InfluxDBConnection {
         description = "Connection establishment timeout (ISO-8601 duration, e.g. `PT10S`). Default is 10 seconds."
     )
     @Builder.Default
+    @PluginProperty(group = "execution")
     protected Property<Duration> connectTimeout = Property.ofValue(Duration.ofSeconds(10));
 
     @Schema(
@@ -50,6 +52,7 @@ public class InfluxDBConnection {
         description = "Maximum time to wait for response bytes (including initial response) (ISO-8601 duration, e.g. `PT10S`). Default is 10 seconds."
     )
     @Builder.Default
+    @PluginProperty(group = "execution")
     protected Property<Duration> readTimeout = Property.ofValue(Duration.ofSeconds(10));
 
     protected InfluxDBClient client(RunContext runContext) throws IllegalVariableEvaluationException {

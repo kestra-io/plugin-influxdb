@@ -53,7 +53,7 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
         description = "URI in internal storage (e.g., `kestra://...`) containing the data to load"
     )
     @NotNull
-    @PluginProperty(internalStorageURI = true)
+    @PluginProperty(internalStorageURI = true, group = "main")
     private Property<String> from;
 
     @Schema(
@@ -61,6 +61,7 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
         description = "Number of points per batch when writing to InfluxDB; defaults to 1000"
     )
     @Builder.Default
+    @PluginProperty(group = "execution")
     private Property<Integer> chunk = Property.ofValue(1000);
 
     /**

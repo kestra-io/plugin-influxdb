@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import io.kestra.core.models.annotations.PluginProperty;
 
 @SuperBuilder
 @ToString
@@ -26,12 +27,14 @@ public abstract class AbstractTask extends Task {
         description = "Connection settings (URL, token, optional options) reused across tasks"
     )
     @NotNull
+    @PluginProperty(group = "main")
     protected InfluxDBConnection connection;
 
     @Schema(
         title = "Bucket name",
         description = "Target bucket for write/query operations when required; ignored by Flux queries"
     )
+    @PluginProperty(group = "connection")
     protected Property<String> bucket;
 
     @Schema(
@@ -39,6 +42,7 @@ public abstract class AbstractTask extends Task {
         description = "Organization scope for queries and writes"
     )
     @NotNull
+    @PluginProperty(group = "main")
     protected Property<String> org;
 
     /**

@@ -18,6 +18,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import reactor.core.publisher.Flux;
+import io.kestra.core.models.annotations.PluginProperty;
 
 @SuperBuilder
 @ToString
@@ -30,6 +31,7 @@ public abstract class AbstractQuery extends AbstractTask {
         description = "Flux or InfluxQL statement to run against InfluxDB"
     )
     @NotNull
+    @PluginProperty(group = "main")
     protected Property<String> query;
 
     @Schema(
@@ -37,6 +39,7 @@ public abstract class AbstractQuery extends AbstractTask {
         description = "`FETCH_ONE` returns the first row, `FETCH` returns all rows, `STORE` writes rows to an ION file, `NONE` only records metrics; default is `NONE`"
     )
     @Builder.Default
+    @PluginProperty(group = "execution")
     protected Property<FetchType> fetchType = Property.ofValue(FetchType.NONE);
 
     protected URI storeResults(RunContext runContext, List<Map<String, Object>> results) throws IOException {

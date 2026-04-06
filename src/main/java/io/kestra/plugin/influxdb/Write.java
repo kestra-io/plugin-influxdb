@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import io.kestra.core.models.annotations.PluginProperty;
 
 /**
  * Task for writing line protocol data directly to InfluxDB
@@ -71,6 +72,7 @@ public class Write extends AbstractTask implements RunnableTask<Write.Output> {
         description = "Multiline string in InfluxDB line protocol"
     )
     @NotNull
+    @PluginProperty(group = "main")
     private Property<String> source;
 
     @Schema(
@@ -78,6 +80,7 @@ public class Write extends AbstractTask implements RunnableTask<Write.Output> {
         description = "Precision applied to unix timestamps in the payload; defaults to nanoseconds"
     )
     @Builder.Default
+    @PluginProperty(group = "advanced")
     private Property<WritePrecision> precision = Property.ofValue(WritePrecision.NS);
 
     @Override
