@@ -23,6 +23,7 @@ import reactor.core.publisher.Flux;
 
 import static io.kestra.core.utils.Rethrow.throwFunction;
 import static io.kestra.plugin.influxdb.utils.TimeUtils.toInstant;
+import io.kestra.core.models.annotations.PluginProperty;
 
 @SuperBuilder
 @ToString
@@ -66,18 +67,21 @@ public class Load extends AbstractLoad {
         description = "Measurement applied to every point from the ION file"
     )
     @NotNull
+    @PluginProperty(group = "main")
     private Property<String> measurement;
 
     @Schema(
         title = "Fields treated as tags",
         description = "Fields listed here are stored as tags; remaining keys become fields"
     )
+    @PluginProperty(group = "advanced")
     private Property<List<String>> tags;
 
     @Schema(
         title = "Timestamp field name",
         description = "Field whose value becomes the point timestamp with nanosecond precision; when unset a `time` key is skipped and InfluxDB assigns the server time"
     )
+    @PluginProperty(group = "advanced")
     private Property<String> timeField;
 
     @SuppressWarnings("unchecked")
