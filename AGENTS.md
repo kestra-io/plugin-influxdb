@@ -2,11 +2,14 @@
 
 ## What
 
-description = 'Plugin InfluxDB for Kestra Exposes 6 plugin components (tasks, triggers, and/or conditions).
+- Provides plugin components under `io.kestra.plugin.influxdb`.
+- Includes classes such as `FluxQuery`, `InfluxQLQuery`, `Write`, `Load`, and `FluxTrigger`.
+- Focuses on querying, writing, loading, and polling InfluxDB data from Kestra workflows.
 
 ## Why
 
-Enables Kestra workflows to interact with InfluxDB, allowing orchestration of InfluxDB-based operations as part of data pipelines and automation workflows.
+- This plugin integrates Kestra with InfluxDB.
+- It lets Kestra workflows query time-series data, write points, and react to matching records.
 
 ## How
 
@@ -57,6 +60,7 @@ plugin-influxdb/
 All tasks and triggers accept standard Kestra plugin properties. Credentials should use
 `{{ secret('SECRET_NAME') }}` — never hardcode real values.
 
-## Agents
+## References
 
-**IMPORTANT:** This is a Kestra plugin repository (prefixed by `plugin-`, `storage-`, or `secret-`). You **MUST** delegate all coding tasks to the `kestra-plugin-developer` agent. Do NOT implement code changes directly — always use this agent.
+- https://kestra.io/docs/plugin-developer-guide
+- https://kestra.io/docs/plugin-developer-guide/contribution-guidelines
