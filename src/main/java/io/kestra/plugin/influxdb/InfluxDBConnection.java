@@ -37,6 +37,7 @@ public class InfluxDBConnection {
         description = "The authentication token for InfluxDB"
     )
     @NotNull
+    @PluginProperty(secret = true)
     protected Property<@NotEmpty String> token;
 
     @Schema(
