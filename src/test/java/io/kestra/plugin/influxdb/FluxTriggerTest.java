@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import io.kestra.core.junit.annotations.EvaluateTrigger;
 import io.kestra.core.junit.annotations.KestraTest;
 import io.kestra.core.models.executions.Execution;
-=======
-import io.kestra.core.junit.annotations.EvaluateTrigger;
->>>>>>> f633ef1 (fix: v2 compatibility)
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -19,8 +16,11 @@ import static org.hamcrest.Matchers.is;
 @KestraTest
 public class FluxTriggerTest {
 
-<<<<<<< HEAD
     @SuppressWarnings("unchecked")
+    @Test
+    @EvaluateTrigger(flow = "flows/influx-listen.yml", triggerId = "watch")
+    void run(Optional<Execution> optionalExecution) {
+        assertThat(optionalExecution.isPresent(), is(true));
 
         Execution execution = optionalExecution.get();
         List<Map<String, Object>> rows = (List<Map<String, Object>>) execution.getTrigger().getVariables().get("rows");
