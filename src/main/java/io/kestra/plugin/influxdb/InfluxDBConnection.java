@@ -8,6 +8,7 @@ import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.InfluxDBClientOptions;
 
 import io.kestra.core.exceptions.IllegalVariableEvaluationException;
+import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.runners.RunContext;
 
@@ -17,7 +18,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import okhttp3.OkHttpClient;
-import io.kestra.core.models.annotations.PluginProperty;
 
 @SuperBuilder
 @ToString

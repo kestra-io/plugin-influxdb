@@ -3,7 +3,9 @@ package io.kestra.plugin.influxdb;
 import java.io.*;
 import java.net.URI;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +52,14 @@ class LoadTest {
         }
 
         URI uri = storageInterface.put(MAIN_TENANT, null, URI.create("/" + IdUtils.create() + ".ion"), new FileInputStream(tempFile));
+
+        // Verify ION read roundtrip
+        try (InputStream is = new BufferedInputStream(storageInterface.get(MAIN_TENANT, null, uri), FileSerde.BUFFER_SIZE)) {
+            List<Object> result = new ArrayList<>();
+            FileSerde.read(is, result::add);
+            assertThat(result.size(), is(5));
+            assertThat(((Map<String, Object>) result.get(0)).get("sensor"), is("sensor-0"));
+        }
 
         Load task = Load.builder()
             .connection(
