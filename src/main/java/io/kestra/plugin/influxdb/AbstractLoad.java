@@ -1,7 +1,7 @@
 package io.kestra.plugin.influxdb;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +71,7 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
      * @param inputStream the source data
      * @return a Flux of Points
      */
-    protected abstract Flux<Point> source(RunContext runContext, BufferedReader inputStream) throws Exception;
+    protected abstract Flux<Point> source(RunContext runContext, InputStream inputStream) throws Exception;
 
     @Override
     public Output run(RunContext runContext) throws Exception {
@@ -81,7 +81,7 @@ public abstract class AbstractLoad extends AbstractTask implements RunnableTask<
 
         try (
             InfluxDBClient client = this.connection.client(runContext);
-            BufferedReader inputStream = new BufferedReader(new InputStreamReader(runContext.storage().getFile(from)), FileSerde.BUFFER_SIZE)
+            InputStream inputStream = new BufferedInputStream(runContext.storage().getFile(from), FileSerde.BUFFER_SIZE)
         ) {
             WriteApiBlocking writeApi = client.getWriteApiBlocking();
             String renderedBucket = runContext.render(bucket).as(String.class).orElseThrow();

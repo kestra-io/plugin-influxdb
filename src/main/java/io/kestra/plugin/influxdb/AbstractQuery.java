@@ -1,13 +1,14 @@
 package io.kestra.plugin.influxdb;
 
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.common.FetchType;
 import io.kestra.core.runners.RunContext;
@@ -18,7 +19,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import reactor.core.publisher.Flux;
-import io.kestra.core.models.annotations.PluginProperty;
 
 @SuperBuilder
 @ToString
@@ -45,7 +45,7 @@ public abstract class AbstractQuery extends AbstractTask {
     protected URI storeResults(RunContext runContext, List<Map<String, Object>> results) throws IOException {
         File tempFile = runContext.workingDir().createTempFile(".ion").toFile();
 
-        try (var output = new BufferedWriter(new FileWriter(tempFile), FileSerde.BUFFER_SIZE)) {
+        try (var output = new BufferedOutputStream(new FileOutputStream(tempFile), FileSerde.BUFFER_SIZE)) {
             Flux<Map<String, Object>> recordFlux = Flux.fromIterable(results);
             FileSerde.writeAll(output, recordFlux).block();
             return runContext.storage().putFile(tempFile);
