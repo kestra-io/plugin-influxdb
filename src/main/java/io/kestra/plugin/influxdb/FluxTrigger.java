@@ -42,7 +42,7 @@ import lombok.experimental.SuperBuilder;
                     tasks:
                       - id: return
                         type: io.kestra.plugin.core.debug.Return
-                        format: "{{ json(taskrun.value) }}"
+                        format: "{{ fromJson(taskrun.value) }}"
                 triggers:
                   - id: watch
                     type: io.kestra.plugin.influxdb.FluxTrigger

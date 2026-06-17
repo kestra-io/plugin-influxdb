@@ -1,6 +1,6 @@
 package io.kestra.plugin.influxdb;
 
-import java.io.BufferedReader;
+import java.io.InputStream;
 import java.util.*;
 
 import com.influxdb.client.domain.WritePrecision;
@@ -8,6 +8,7 @@ import com.influxdb.client.write.Point;
 
 import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Plugin;
+import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.serializers.FileSerde;
@@ -23,7 +24,6 @@ import reactor.core.publisher.Flux;
 
 import static io.kestra.core.utils.Rethrow.throwFunction;
 import static io.kestra.plugin.influxdb.utils.TimeUtils.toInstant;
-import io.kestra.core.models.annotations.PluginProperty;
 
 @SuperBuilder
 @ToString
@@ -86,7 +86,7 @@ public class Load extends AbstractLoad {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Flux<Point> source(RunContext runContext, BufferedReader inputStream) throws Exception {
+    protected Flux<Point> source(RunContext runContext, InputStream inputStream) throws Exception {
         String renderedMeasurement = runContext.render(measurement).as(String.class).orElseThrow();
         String renderedTimeField = runContext.render(timeField).as(String.class).orElse(null);
         List<String> renderedTags = runContext.render(tags).asList(String.class);
