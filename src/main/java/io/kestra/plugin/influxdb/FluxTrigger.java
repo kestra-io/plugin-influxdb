@@ -65,14 +65,19 @@ public class FluxTrigger extends AbstractTrigger implements PollingTriggerInterf
     @Builder.Default
     private final Duration interval = Duration.ofSeconds(60);
 
+    @Schema(title = "Connection to the InfluxDB instance")
     private InfluxDBConnection connection;
 
+    @Schema(title = "Organization to query")
     private Property<String> org;
 
+    @Schema(title = "Bucket to query")
     private Property<String> bucket;
 
+    @Schema(title = "Flux query to execute on each poll")
     private Property<String> query;
 
+    @Schema(title = "How to fetch the query result")
     @Builder.Default
     private Property<FetchType> fetchType = Property.ofValue(FetchType.NONE);
 
