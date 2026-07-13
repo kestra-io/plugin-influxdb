@@ -26,14 +26,14 @@ tasks:
     duration: PT45S
 
   - id: runSubflows
-    type: io.kestra.plugin.core.flow.ForEach
+    type: io.kestra.plugin.core.flow.Loop
     values: ["write_query_flux", "write_query_influxql", "load"]
     concurrencyLimit: 0
     tasks:
       - id: call_subflow
         type: io.kestra.plugin.core.flow.Subflow
         namespace: "{{ flow.namespace }}"
-        flowId: "{{ taskrun.value }}"
+        flowId: "{{ item.value }}"
         wait: true
         transmitFailed: true
         inputs:
