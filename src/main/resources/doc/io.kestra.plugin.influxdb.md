@@ -4,7 +4,7 @@ Query and write time-series data in InfluxDB from Kestra flows.
 
 ## Authentication
 
-Configure the `connection` object: set `url` to your InfluxDB server URL and `token` to your authentication token. Set `org` and `bucket` at the task level to scope operations. Store secrets in [secrets](https://kestra.io/docs/concepts/secret) and apply connection properties globally with [plugin defaults](https://kestra.io/docs/workflow-components/plugin-defaults).
+Configure the `connection` object: set `url` to your InfluxDB server URL and `token` to your authentication token. Set `org` and `bucket` at the task level to scope operations. Store secrets in [secrets](https://kestra.io/docs/concepts/secret) and set connection properties on each task.
 
 ## Tasks
 
